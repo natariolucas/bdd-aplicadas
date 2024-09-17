@@ -8,7 +8,7 @@ INSERTs por fuera del SP insertarLog.
 
 */
 
-CREATE OR ALTER PROCEDURE insertarLog @modulo varchar(10), @texto varchar(50)
+CREATE OR ALTER PROCEDURE ddbba.insertarLog @modulo varchar(10), @texto varchar(50)
 AS
 BEGIN
  IF @texto = ''
