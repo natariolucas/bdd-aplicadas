@@ -65,6 +65,9 @@ CREATE TABLE ddbba.curso_persona(
 	CONSTRAINT FK_persona FOREIGN KEY(dni) REFERENCES ddbba.persona(dni)
 );
 
+ALTER TABLE ddbba.curso_persona
+ADD CONSTRAINT FK_tipo_asistente FOREIGN KEY(tipo_asistente) REFERENCES ddbba.tipo_asistente(id);
+
 go -- Separa transaccion para la creación del trigger
 
 
