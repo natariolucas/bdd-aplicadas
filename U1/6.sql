@@ -1,3 +1,10 @@
+/*
+6. Compruebe que las restricciones creadas funcionen correctamente generando 
+juegos de prueba que no se admitan. Documente con un comentario el error de 
+validación en cada caso. Asegúrese de probar con valores no admitidos siquiera una 
+vez cada restricción. 
+*/
+
 RAISERROR('step by step', 25, 25) WITH LOG;
 go
 
