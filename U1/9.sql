@@ -5,4 +5,4 @@ WITH CTE (nombre, apellido, ocurrencia) AS
 	from ddbba.persona
 )
 -- SELECT * FROM CTE where ocurrencia > 1
-DELETE FROM CTE where ocurrencia > 1
+-- DELETE FROM CTE where ocurrencia > 1
