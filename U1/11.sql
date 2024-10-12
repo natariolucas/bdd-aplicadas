@@ -17,11 +17,16 @@ BEGIN
 		WHERE orden = @curso;
 
 		DECLARE @maxAlumnosPosibles int;
+		WITH CTE(dni) AS (
+			SELECT cp.dni 
+			FROM ddbba.curso_persona cp
+				INNER JOIN ddbba.curso c ON c.comision = cp.comision AND c.id_materia = @materia
+			GROUP BY cp.dni
+		)
 		SELECT @maxAlumnosPosibles = COUNT(*)
-		FROM ddbba.persona p 
-			LEFT JOIN ddbba.curso c ON c.id_materia = @materia
-			LEFT JOIN ddbba.curso_persona cp ON cp.dni = p.dni and cp.comision = c.comision -- excluyo las personas que esten en cualquier comision de la misma materia de la comision a insertar
-		WHERE cp.dni is null;
+		FROM ddbba.persona p
+			LEFT JOIN CTE c on c.dni = p.dni
+		WHERE c.dni IS NULL
 
 		IF @maxAlumnosPosibles > 10 BEGIN SET @maxAlumnosPosibles = 10 END -- para facilitar debug
 
@@ -33,12 +38,19 @@ BEGIN
 		WHILE @cantAlumnosAsignar > 0
 		BEGIN
 			DECLARE @dni int
+
+
+			WITH CTE(dni) AS (
+				SELECT cp.dni 
+				FROM ddbba.curso_persona cp
+					INNER JOIN ddbba.curso c ON c.comision = cp.comision AND c.id_materia = @materia
+				GROUP BY cp.dni
+			)
 			SELECT @dni = t1.dni FROM (
 				SELECT p.dni, ROW_NUMBER() OVER(order by p.dni) as orden
 				FROM ddbba.persona p 
-					LEFT JOIN ddbba.curso c ON c.id_materia = @materia
-					LEFT JOIN ddbba.curso_persona cp ON cp.dni = p.dni and cp.comision = c.comision -- excluyo las personas que esten en cualquier comision de la misma materia de la comision a insertar
-				WHERE cp.dni is null ) as t1 -- TODO: Fix, se esta agarrando cuando estan en al menos un curso de la materia no igual
+					LEFT JOIN CTE c on c.dni = p.dni
+				WHERE c.dni IS NULL ) as t1
 			WHERE t1.orden = @cantAlumnosAsignar
 
 			INSERT INTO ddbba.curso_persona VALUES (@comision, @dni, 11)
